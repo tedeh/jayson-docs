@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>Jayson Source: lib/generateRequest.js</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.simplex.css">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top navbar-inverse">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">Jayson</a>
+		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+        </button>
+	</div>
+	<div class="navbar-collapse collapse" id="topNavigation">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="namespaces.list.html" class="dropdown-toggle" data-toggle="dropdown">Namespaces<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Jayson.html">Jayson</a></li><li><a href="JaysonPromise.html">JaysonPromise</a></li><li><a href="PromiseUtils.html">PromiseUtils</a></li><li><a href="Utils.html">Utils</a></li><li><a href="Utils.JSON.html">Utils.JSON</a></li><li><a href="Utils.Request.html">Utils.Request</a></li><li><a href="Utils.Response.html">Utils.Response</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Client.html">Client</a></li><li><a href="ClientBrowser.html">ClientBrowser</a></li><li><a href="ClientHttp.html">ClientHttp</a></li><li><a href="ClientHttps.html">ClientHttps</a></li><li><a href="ClientTcp.html">ClientTcp</a></li><li><a href="ClientTls.html">ClientTls</a></li><li><a href="Method.html">Method</a></li><li><a href="PromiseClient.html">PromiseClient</a></li><li><a href="PromiseClientHttp.html">PromiseClientHttp</a></li><li><a href="PromiseClientHttps.html">PromiseClientHttps</a></li><li><a href="PromiseClientTcp.html">PromiseClientTcp</a></li><li><a href="PromiseClientTls.html">PromiseClientTls</a></li><li><a href="PromiseMethod.html">PromiseMethod</a></li><li><a href="PromiseServer.html">PromiseServer</a></li><li><a href="Server.html">Server</a></li><li><a href="ServerHttp.html">ServerHttp</a></li><li><a href="ServerHttps.html">ServerHttps</a></li><li><a href="ServerMiddleware.html">ServerMiddleware</a></li><li><a href="ServerTcp.html">ServerTcp</a></li><li><a href="ServerTls.html">ServerTls</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+        
+            <div class="col-sm-3 col-md-3">
+                <form class="navbar-form" role="search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                        <div class="input-group-btn">
+                            <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        
+	</div>
+
+</div>
+</div>
+
+
+<div class="container" id="toc-content">
+<div class="row">
+
+	
+	<div class="col-md-12">
+	
+		<div id="main">
+			
+
+		<h1 class="page-title">Source: lib/generateRequest.js</h1>
+    
+<section>
+    <article>
+        <pre
+            class="sunlight-highlight-javascript linenums">'use strict';
+
+const isString = require('lodash/isString');
+const isUndefined = require('lodash/isUndefined');
+const isObject = require('lodash/isObject');
+const isArray = require('lodash/isArray');
+const isFunction = require('lodash/isFunction');
+const uuid = require('uuid/v4');
+
+/**
+ *  Generates a JSON-RPC 1.0 or 2.0 request
+ *  @param {String} method Name of method to call
+ *  @param {Array|Object} params Array of parameters passed to the method as specified, or an object of parameter names and corresponding value
+ *  @param {String|Number|null} [id] Request ID can be a string, number, null for explicit notification or left out for automatic generation
+ *  @param {Object} [options]
+ *  @param {Number} [options.version=2] JSON-RPC version to use (1 or 2)
+ *  @param {Function} [options.generator] Passed the request, and the options object and is expected to return a request ID
+ *  @throws {TypeError} If any of the parameters are invalid
+ *  @return {Object} A JSON-RPC 1.0 or 2.0 request
+ */
+module.exports = function(method, params, id, options) {
+  if(!isString(method)) {
+    throw new TypeError(method + ' must be a string');
+  }
+
+  options = options || {};
+
+  const request = {
+    method: method
+  };
+
+  // assume that we are doing a 2.0 request unless specified differently
+  if(isUndefined(options.version) || options.version !== 1) {
+    request.jsonrpc = '2.0';
+  }
+
+  if(params) {
+
+    // params given, but invalid?
+    if(!isObject(params) &amp;&amp; !isArray(params)) {
+      throw new TypeError(params + ' must be an object, array or omitted');
+    }
+
+    request.params = params;
+
+  }
+
+  // if id was left out, generate one (null means explicit notification)
+  if(typeof(id) === 'undefined') {
+    const generator = isFunction(options.generator) ? options.generator : function() { return uuid(); };
+    request.id = generator(request, options);
+  } else {
+    request.id = id;
+  }
+
+  return request;
+};
+</pre>
+    </article>
+</section>
+
+
+
+
+
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	
+
+</div>
+</div>
+
+
+    <div class="modal fade" id="searchResults">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Search results</h4>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
+
+
+<footer>
+
+
+	<span class="copyright">
+	The MIT License
+	</span>
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a>
+	
+	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
+</span>
+</footer>
+
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/toc.js"></script>
+
+    <script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( ".tutorial-section pre, .readme-section pre, pre.prettyprint.source" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
+			lang = langClassMatch ? langClassMatch[1] : "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : true,
+		showMenu : true,
+		enableDoclinks : true
+	} );
+
+	$.catchAnchorLinks( {
+        navbarOffset: 10
+	} );
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			return $( heading ).attr( "id" ) || ( prefix + i );
+		},
+		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
+		showAndHide : false,
+		smoothScrolling: true
+	} );
+
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+
+    $( "table" ).each( function () {
+      var $this = $( this );
+      $this.addClass('table');
+    } );
+
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            SearcherDisplay.init();
+        });
+    </script>
+
+
+</body>
+</html>

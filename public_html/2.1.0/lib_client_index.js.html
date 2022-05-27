@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>Jayson Source: lib/client/index.js</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.simplex.css">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top navbar-inverse">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">Jayson</a>
+		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+        </button>
+	</div>
+	<div class="navbar-collapse collapse" id="topNavigation">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="namespaces.list.html" class="dropdown-toggle" data-toggle="dropdown">Namespaces<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Jayson.html">Jayson</a></li><li><a href="JaysonPromise.html">JaysonPromise</a></li><li><a href="PromiseUtils.html">PromiseUtils</a></li><li><a href="Utils.html">Utils</a></li><li><a href="Utils.JSON.html">Utils.JSON</a></li><li><a href="Utils.Request.html">Utils.Request</a></li><li><a href="Utils.Response.html">Utils.Response</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Client.html">Client</a></li><li><a href="ClientBrowser.html">ClientBrowser</a></li><li><a href="ClientHttp.html">ClientHttp</a></li><li><a href="ClientHttps.html">ClientHttps</a></li><li><a href="ClientTcp.html">ClientTcp</a></li><li><a href="ClientTls.html">ClientTls</a></li><li><a href="Method.html">Method</a></li><li><a href="PromiseClient.html">PromiseClient</a></li><li><a href="PromiseClientHttp.html">PromiseClientHttp</a></li><li><a href="PromiseClientHttps.html">PromiseClientHttps</a></li><li><a href="PromiseClientTcp.html">PromiseClientTcp</a></li><li><a href="PromiseClientTls.html">PromiseClientTls</a></li><li><a href="PromiseMethod.html">PromiseMethod</a></li><li><a href="PromiseServer.html">PromiseServer</a></li><li><a href="Server.html">Server</a></li><li><a href="ServerHttp.html">ServerHttp</a></li><li><a href="ServerHttps.html">ServerHttps</a></li><li><a href="ServerMiddleware.html">ServerMiddleware</a></li><li><a href="ServerTcp.html">ServerTcp</a></li><li><a href="ServerTls.html">ServerTls</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+        
+            <div class="col-sm-3 col-md-3">
+                <form class="navbar-form" role="search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                        <div class="input-group-btn">
+                            <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        
+	</div>
+
+</div>
+</div>
+
+
+<div class="container" id="toc-content">
+<div class="row">
+
+	
+	<div class="col-md-12">
+	
+		<div id="main">
+			
+
+		<h1 class="page-title">Source: lib/client/index.js</h1>
+    
+<section>
+    <article>
+        <pre
+            class="sunlight-highlight-javascript linenums">var _ = require('lodash');
+var utils = require('../utils');
+var events = require('events');
+
+/**
+ *  Constructor for a Jayson Client
+ *  @class Client
+ *  @extends require('events').EventEmitter
+ *  @param {Server} [server] An instance of Server (a object with a "call" method")
+ *  @param {Object} [options]
+ *  @param {Function} [options.reviver] Reviver function for JSON
+ *  @param {Function} [options.replacer] Replacer function for JSON
+ *  @param {Number} [options.version=2] JSON-RPC version to use (1|2)
+ *  @param {Function} [options.generator] Function to use for generating request IDs
+ *  @return {Client}
+ */
+var Client = function(server, options) {
+  if(arguments.length === 1 &amp;&amp; _.isPlainObject(server)) {
+    options = server;
+    server = null;
+  }
+
+  if(!(this instanceof Client)) {
+    return new Client(server, options);
+  }
+
+  var defaults = {
+    reviver: null,
+    replacer: null,
+    generator: utils.generateId,
+    version: 2
+  };
+
+  this.options = utils.merge(defaults, options || {});
+
+  if(server) {
+    this.server = server;
+  }
+};
+require('util').inherits(Client, events.EventEmitter);
+
+module.exports = Client;
+
+/**
+ * HTTP client constructor
+ * @type ClientHttp
+ * @static
+ */
+Client.http = require('./http');
+
+/**
+ * HTTPS client constructor
+ * @type ClientHttps
+ * @static
+ */
+Client.https = require('./https');
+
+/**
+ * TCP client constructor
+ * @type ClientTcp
+ * @static
+ */
+Client.tcp = require('./tcp');
+
+/**
+ * TLS client constructor
+ * @type ClientTls
+ * @static
+ */
+Client.tls = require('./tls');
+
+/**
+ * Browser client constructor
+ * @type ClientBrowser
+ * @static
+ */
+Client.browser = require('./browser');
+
+/**
+ *  Creates a request and dispatches it if given a callback.
+ *  @param {String|Array} method A batch request if passed an Array, or a method name if passed a String
+ *  @param {Array|Object} params Parameters for the method
+ *  @param {String|Number} [id] Optional id. If undefined an id will be generated. If null it creates a notification request
+ *  @param {Function} [callback] Request callback. If specified, executes the request rather than only returning it.
+ *  @throws {TypeError} Invalid parameters
+ *  @return {Object} JSON-RPC 1.0 or 2.0 compatible request
+ */
+Client.prototype.request = function(method, params, id, callback) {
+  var self = this;
+  var request = null;
+
+  // is this a batch request?
+  var isBatch = Array.isArray(method) &amp;&amp; typeof(params) === 'function';
+
+  if (this.options.version === 1 &amp;&amp; isBatch) {
+    throw new TypeError('JSON-RPC 1.0 does not support batching');
+  }
+
+  // is this a raw request?
+  var isRaw = !isBatch &amp;&amp; method &amp;&amp; typeof(method) === 'object' &amp;&amp; typeof(params) === 'function';
+
+  if(isBatch || isRaw) {
+    callback = params;
+    request = method;
+  } else {
+    if(typeof(id) === 'function') {
+      callback = id;
+      // specifically undefined because "null" is a notification request
+      id = undefined;
+    }
+
+    var hasCallback = typeof(callback) === 'function';
+
+    try {
+      request = utils.request(method, params, id, {
+        generator: this.options.generator,
+        version: this.options.version
+      });
+    } catch(err) {
+      if(hasCallback) {
+        callback(err);
+        return;
+      }
+      throw err;
+    }
+
+    // no callback means we should just return a raw request before sending
+    if(!hasCallback) {
+      return request;
+    }
+
+  }
+
+  this.emit('request', request);
+
+  this._request(request, function(err, response) {
+    self.emit('response', request, response);
+    self._parseResponse(err, response, callback);
+  });
+
+  // always return the raw request
+  return request;
+};
+
+/**
+ *  Executes a request on a directly bound server
+ *  @param {Object} request A JSON-RPC 1.0 or 2.0 request
+ *  @param {Function} callback Request callback that will receive the server response as the second argument
+ *  @private
+ */
+Client.prototype._request = function(request, callback) {
+  var self = this;
+
+  // serializes the request as a JSON string so that we get a copy and can run the replacer as intended
+  utils.JSON.stringify(request, this.options, function(err, message) {
+    if(err) {
+      callback(err);
+      return;
+    }
+
+    self.server.call(message, function(error, success) {
+      var response = error || success;
+      callback(null, response);
+    });
+
+  });
+
+};
+
+/**
+ * Parses a response from a server
+ * @param {Object} err Error to pass on that is unrelated to the actual response
+ * @param {Object} response JSON-RPC 1.0 or 2.0 response
+ * @param {Function} callback Callback that will receive different arguments depending on the amount of parameters
+ * @private
+ */
+Client.prototype._parseResponse = function(err, response, callback) {
+  if(err) {
+    return callback(err);
+  }
+
+  if(!response || typeof(response) !== 'object') {
+    return callback();
+  }
+
+  if(callback.length === 3) {
+    // if callback length is 3, we split callback arguments on error and response
+
+    // is batch response?
+    if(Array.isArray(response)) {
+
+      // neccesary to split strictly on validity according to spec here
+      var isError = function(res) { return typeof(res.error) !== 'undefined'; };
+      var isNotError = function(res) { return !isError(res); };
+
+      return callback(null, response.filter(isError), response.filter(isNotError));
+    
+    } else {
+
+      // split regardless of validity
+      return callback(null, response.error, response.result);
+    
+    }
+  
+  }
+
+  return callback(null, response);
+
+};
+</pre>
+    </article>
+</section>
+
+
+
+
+
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	
+
+</div>
+</div>
+
+
+    <div class="modal fade" id="searchResults">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Search results</h4>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
+
+
+<footer>
+
+
+	<span class="copyright">
+	The MIT License
+	</span>
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a>
+	
+	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
+</span>
+</footer>
+
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/toc.js"></script>
+
+    <script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( ".tutorial-section pre, .readme-section pre, pre.prettyprint.source" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
+			lang = langClassMatch ? langClassMatch[1] : "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : true,
+		showMenu : true,
+		enableDoclinks : true
+	} );
+
+	$.catchAnchorLinks( {
+        navbarOffset: 10
+	} );
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			return $( heading ).attr( "id" ) || ( prefix + i );
+		},
+		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
+		showAndHide : false,
+		smoothScrolling: true
+	} );
+
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+
+    $( "table" ).each( function () {
+      var $this = $( this );
+      $this.addClass('table');
+    } );
+
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            SearcherDisplay.init();
+        });
+    </script>
+
+
+</body>
+</html>

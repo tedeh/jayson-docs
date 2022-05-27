@@ -1,0 +1,1464 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>Jayson Index</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.simplex.css">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top navbar-inverse">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">Jayson</a>
+		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+        </button>
+	</div>
+	<div class="navbar-collapse collapse" id="topNavigation">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="namespaces.list.html" class="dropdown-toggle" data-toggle="dropdown">Namespaces<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Jayson.html">Jayson</a></li><li><a href="JaysonPromise.html">JaysonPromise</a></li><li><a href="PromiseUtils.html">PromiseUtils</a></li><li><a href="Utils.html">Utils</a></li><li><a href="Utils.JSON.html">Utils.JSON</a></li><li><a href="Utils.Request.html">Utils.Request</a></li><li><a href="Utils.Response.html">Utils.Response</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Client.html">Client</a></li><li><a href="ClientBrowser.html">ClientBrowser</a></li><li><a href="ClientHttp.html">ClientHttp</a></li><li><a href="ClientHttps.html">ClientHttps</a></li><li><a href="ClientTcp.html">ClientTcp</a></li><li><a href="ClientTls.html">ClientTls</a></li><li><a href="Method.html">Method</a></li><li><a href="PromiseClient.html">PromiseClient</a></li><li><a href="PromiseClientHttp.html">PromiseClientHttp</a></li><li><a href="PromiseClientHttps.html">PromiseClientHttps</a></li><li><a href="PromiseClientTcp.html">PromiseClientTcp</a></li><li><a href="PromiseClientTls.html">PromiseClientTls</a></li><li><a href="PromiseMethod.html">PromiseMethod</a></li><li><a href="PromiseServer.html">PromiseServer</a></li><li><a href="Server.html">Server</a></li><li><a href="ServerHttp.html">ServerHttp</a></li><li><a href="ServerHttps.html">ServerHttps</a></li><li><a href="ServerMiddleware.html">ServerMiddleware</a></li><li><a href="ServerTcp.html">ServerTcp</a></li><li><a href="ServerTls.html">ServerTls</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+        
+            <div class="col-sm-3 col-md-3">
+                <form class="navbar-form" role="search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                        <div class="input-group-btn">
+                            <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        
+	</div>
+
+</div>
+</div>
+
+
+<div class="container" id="toc-content">
+<div class="row">
+
+	
+	<div class="col-md-8">
+	
+		<div id="main">
+			
+
+	
+	
+
+
+
+    <h3>jayson 3.0.2</h3>
+
+
+
+
+
+
+
+
+
+	
+	
+
+
+
+
+
+    <section class="readme-section">
+        <article><h1>Jayson</h1><p>Jayson is a <a href="http://jsonrpc.org/spec.html">JSON-RPC 2.0</a> and <a href="http://json-rpc.org/wiki/specification">1.0</a> compliant server and client written in JavaScript for <a href="http://nodejs.org/">node.js</a> that aims to be as simple as possible to use.</p>
+<p><a href="https://travis-ci.org/tedeh/jayson"><img src="https://img.shields.io/travis/tedeh/jayson/master.svg?style=flat-square" alt="travis build status"></a> 
+<a href="https://www.npmjs.com/package/jayson"><img src="https://img.shields.io/npm/v/jayson.svg?style=flat-square" alt="npm version"></a>
+<a href="https://www.npmjs.com/package/jayson"><img src="https://img.shields.io/npm/dm/jayson.svg?style=flat-square" alt="npm"></a></p>
+<h2>Table of contents</h2><ul>
+<li><a href="#features">Features</a></li>
+<li><a href="#example">Example</a></li>
+<li><a href="#installation">Installation</a></li>
+<li><a href="#changelog-only-notable-milestones">Changelog</a></li>
+<li><a href="#requirements">Requirements</a></li>
+<li><a href="#class-documentation">Class Documentation</a></li>
+<li><a href="#running-tests">Running tests</a></li>
+<li><a href="#typescript">Typescript</a></li>
+<li><a href="#usage">Usage</a><ul>
+<li><a href="#client">Client</a><ul>
+<li><a href="#client-interface-description">Interface description</a></li>
+<li><a href="#clientbrowser">Browser usage</a></li>
+<li><a href="#notifications">Notifications</a></li>
+<li><a href="#batches">Batches</a></li>
+<li><a href="#client-callback-syntactic-sugar">Callback syntactic sugar</a></li>
+<li><a href="#client-events">Events</a></li>
+</ul>
+</li>
+<li><a href="#server">Server</a><ul>
+<li><a href="#server-interface-description">Interface description</a></li>
+<li><a href="#many-interfaces-at-the-same-time">Many interfaces at the same time</a></li>
+<li><a href="#using-the-server-as-a-relay">Using the server as a relay</a></li>
+<li><a href="#method-routing">Method routing</a></li>
+<li><a href="#method-definition">Method definition</a></li>
+<li><a href="#server-events">Events</a></li>
+<li><a href="#server-errors">Errors</a></li>
+<li><a href="#server-cors">CORS</a></li>
+<li><a href="#server-context">Context</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#revivers-and-replacers">Revivers and replacers</a></li>
+<li><a href="#named-parameters">Named parameters</a></li>
+<li><a href="#promises">Promises</a><ul>
+<li><a href="#promise-batches">Batches</a></li>
+</ul>
+</li>
+<li><a href="#faq">FAQ</a></li>
+<li><a href="#what-is-the-recommended-way-to-use-jayson">Recommended usage</a></li>
+<li><a href="#contributing">Contributing</a></li>
+</ul>
+<h2>Features</h2><ul>
+<li><a href="#many-interfaces-at-the-same-time">Servers that can listen to several interfaces at the same time</a></li>
+<li>Supports both HTTP and TCP client and server connections</li>
+<li><a href="#method-routing">Server-side method routing</a></li>
+<li><a href="#using-the-server-as-a-relay">Relaying of requests to other servers</a></li>
+<li><a href="#revivers-and-replacers">JSON reviving and replacing for transparent serialization of complex objects</a></li>
+<li><a href="#cli-client">CLI client</a></li>
+<li><a href="#promises">Promises</a></li>
+<li>Fully tested to comply with the <a href="http://jsonrpc.org/spec.html">official JSON-RPC 2.0 specification</a></li>
+<li>Also supports <a href="http://json-rpc.org/wiki/specification">JSON-RPC 1.0</a></li>
+</ul>
+<h2>Example</h2><p>A basic JSON-RPC 2.0 server via HTTP:</p>
+<p>Server example in <a href="examples/simple_example/server.js">examples/simple_example/server.js</a>:</p>
+<pre class="prettyprint source lang-javascript"><code>'use strict';
+
+const jayson = require('./../..');
+
+// create a server
+const server = jayson.server({
+  add: function(args, callback) {
+    callback(null, args[0] + args[1]);
+  }
+});
+
+server.http().listen(3000);</code></pre><p>Client example in <a href="examples/simple_example/client.js">examples/simple_example/client.js</a> invoking <code>add</code> on the above server:</p>
+<pre class="prettyprint source lang-javascript"><code>'use strict';
+
+const jayson = require('./../..');
+
+// create a client
+const client = jayson.client.http({
+  port: 3000
+});
+
+// invoke &quot;add&quot;
+client.request('add', [1, 1], function(err, response) {
+  if(err) throw err;
+  console.log(response.result); // 2
+});</code></pre><h2>Installation</h2><p>Install the latest version of <em>jayson</em> from <a href="https://www.npmjs.com">npm</a> by executing <code>npm install jayson</code> in your shell. Do a global install with <code>npm install --global jayson</code> if you want the <code>jayson</code> client CLI in your PATH.</p>
+<h2>Changelog (only notable milestones)</h2><ul>
+<li><em>3.0.0</em><ul>
+<li>Can pass a <a href="#server-context">context object</a> to handlers</li>
+<li><em>Breaking</em>: <code>collect</code> option removed from <code>jayson.Server/Method</code>. JSON-RPC params to handlers are now <strong>always</strong> in the first argument.</li>
+</ul>
+</li>
+<li><em>2.1.0</em><ul>
+<li>Experimental typescript support</li>
+</ul>
+</li>
+<li><em>2.0.6</em><ul>
+<li>Clarified how to use <a href="#clientbrowser">in the browser</a></li>
+</ul>
+</li>
+<li><em>2.0.0</em><ul>
+<li>Added <a href="#promises">support for promises</a></li>
+<li><em>Breaking</em>: <code>collect: true</code> is now the default option for a new <code>jayson.Server</code> and <code>jayson.Method</code></li>
+</ul>
+</li>
+<li><em>1.2.0</em><ul>
+<li>Greatly improved <a href="#method-definition">server method definition</a></li>
+</ul>
+</li>
+<li><em>1.1.1</em><ul>
+<li>More http server events</li>
+<li>Remove fork server and client</li>
+<li>Add server routing</li>
+</ul>
+</li>
+<li><em>1.0.11</em>
+Add support for a HTTPS client</li>
+<li><em>1.0.9</em>
+Add support for TCP servers and clients</li>
+</ul>
+<h3>CLI client</h3><p>There is a basic CLI client in <code>bin/jayson.js</code> and it should be available as <code>jayson</code> in your shell if you installed the package globally. Run <code>jayson --help</code> to see how it works.</p>
+<h2>Requirements</h2><p>Jayson does not have any special dependencies that cannot be resolved with a simple <code>npm install</code>. It is being <a href="https://travis-ci.org/tedeh/jayson">continuously tested</a> using <a href="https://travis-ci.org/">travis-ci</a>. You can look inside <a href=".travis.yml">.travis.yml</a> if you want to see which versions are tested against.</p>
+<h2>Class documentation</h2><p>In addition to this document, a comprehensive class documentation made with <a href="http://usejsdoc.org/">jsdoc</a> is available at <a href="http://jayson.tedeh.net">jayson.tedeh.net</a>.</p>
+<h2>Running tests</h2><ul>
+<li>Change directory to the repository root</li>
+<li>Install the development packages by executing <code>npm install --dev</code></li>
+<li>Run the tests with <code>npm run test</code></li>
+</ul>
+<h2>Typescript</h2><p>Since <code>v2.1.0</code> there is experimental typescript support available with jayson.</p>
+<p>If you have a problem with the type definitions, see the <a href="#contributing">Contributing</a> section.</p>
+<h2>Usage</h2><h3>Client</h3><p>The client is available as the <code>Client</code> or <code>client</code> property of <code>require('jayson')</code>.</p>
+<h4>Client interface description</h4><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Client</code></td>
+<td>Base class</td>
+</tr>
+<tr>
+<td><code>Client.tcp</code></td>
+<td>TCP interface</td>
+</tr>
+<tr>
+<td><code>Client.tls</code></td>
+<td>TLS interface</td>
+</tr>
+<tr>
+<td><code>Client.http</code></td>
+<td>HTTP interface</td>
+</tr>
+<tr>
+<td><code>Client.https</code></td>
+<td>HTTPS interface</td>
+</tr>
+<tr>
+<td><code>Client.browser</code></td>
+<td>Browser interface</td>
+</tr>
+</tbody>
+</table>
+<p>Every client supports these options:</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Default</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>reviver</code></td>
+<td><code>undefined</code></td>
+<td><code>Function</code></td>
+<td><code>JSON.parse</code> reviver</td>
+</tr>
+<tr>
+<td><code>replacer</code></td>
+<td><code>undefined</code></td>
+<td><code>Function</code></td>
+<td><code>JSON.stringify</code> replacer</td>
+</tr>
+<tr>
+<td><code>generator</code></td>
+<td><a href="http://www.ietf.org/rfc/rfc4122.txt">RFC4122</a> generator</td>
+<td><code>Function</code></td>
+<td>Generates a <code>String</code> for request ID.</td>
+</tr>
+<tr>
+<td><code>version</code></td>
+<td>2</td>
+<td><code>Number</code></td>
+<td>JSON-RPC version to support (1 or 2)</td>
+</tr>
+</tbody>
+</table>
+<h5>Client.http</h5><p>Uses the same options as <a href="http://nodejs.org/docs/latest/api/http.html#http_http_request_options_callback">http.request</a> in addition to these options:</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Default</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>encoding</code></td>
+<td><code>utf8</code></td>
+<td><code>String</code></td>
+<td>Determines the encoding to use</td>
+</tr>
+<tr>
+<td><code>headers</code></td>
+<td><code>undefined</code></td>
+<td><code>Object</code></td>
+<td>Extend the headers sent by the client</td>
+</tr>
+</tbody>
+</table>
+<h6>Client.http Events</h6><p>The HTTP server will emit the following events:</p>
+<table>
+<thead>
+<tr>
+<th>Event</th>
+<th>When</th>
+<th>Arguments</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>http request</code></td>
+<td>Created an HTTP request</td>
+<td>1. Instance of <code>http.ClientRequest</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>http response</code></td>
+<td>Received an HTTP response</td>
+<td>1. Instance of <code>http.IncomingMessage</code> 2. Instance of <code>http.ClientRequest</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>http error</code></td>
+<td>Underlying stream emits <code>error</code></td>
+<td>1. Error</td>
+<td></td>
+</tr>
+<tr>
+<td><code>http timeout</code></td>
+<td>Underlying stream emits <code>timeout</code></td>
+<td></td>
+<td>Automatically causes the request to abort</td>
+</tr>
+</tbody>
+</table>
+<p>It is possible to pass a string URL as the first argument. The URL will be run through <a href="http://nodejs.org/api/url.html#url_url_parse_urlstr_parsequerystring_slashesdenotehost">url.parse</a>. Example:</p>
+<pre class="prettyprint source lang-javascript"><code>var jayson = require('jayson');
+var client = jayson.client.http('http://localhost:3000');
+// client.options is now the result of url.parse</code></pre><h5>Client.https</h5><p>Uses the same options as <a href="http://nodejs.org/api/all.html#all_https_request_options_callback">https.request</a> in addition <em>to the same options as <code>Client.http</code></em>. This means it is also possible
+to pass a string URL as the first argument and have it interpreted by <a href="http://nodejs.org/api/url.html#url_url_parse_urlstr_parsequerystring_slashesdenotehost">url.parse</a>.</p>
+<p>Will emit the <a href="#clienthttp-events">same custom events</a> as <code>Client.http</code>.</p>
+<h5>Client.tcp</h5><p>Uses the same options as <a href="https://nodejs.org/api/net.html#net_net_connect">net.connect</a> in addition <em>to the same options as <code>Client.http</code></em>.</p>
+<h5>Client.tls</h5><p>Uses the same options as <a href="https://nodejs.org/api/tls.html#tls_tls_connect_options_callback">tls.connect</a> in addition <em>to the same options as <code>Client.http</code></em>.</p>
+<h5>Client.browser</h5><p>The browser client is a simplified version of the regular client for use browser-side. It does not have any dependencies on node.js core libraries (but does depend on the <code>uuid</code> and <code>lodash</code>) and also does not know how to &quot;send&quot; a request to a server like the other clients.</p>
+<p>Because it does not depend on any core libraries, the browser client is <strong>not</strong> an instance of <code>JaysonClient</code> or <code>EventEmitter</code> and therefore does <strong>not</strong> emit any of the normal request events that the other clients do.</p>
+<p>To use the browser client, <code>require('jayson/lib/client/browser')</code> and pass a calling/transport function as the first argument. The transport function receives a JSON-RPC string request and is expected to callback with a string response received from the server (not JSON) or an error (not a JSON-RPC error).</p>
+<p>The reason for dealing with strings is to support the <code>reviver</code> and <code>replacer</code> options like the other clients.</p>
+<p>This client example in <a href="examples/browser_client/client.js">examples/browser_client/client.js</a> below uses <a href="https://github.com/bitinn/node-fetch">node-fetch</a> in the transport function, but a dropin replacement for use in an <em>actual</em> browser could instead use <a href="https://github.com/github/fetch/issues/184">whatwg-fetch</a>.</p>
+<pre class="prettyprint source lang-javascript"><code>'use strict';
+
+const jaysonBrowserClient = require('./../../lib/client/browser');
+const fetch = require('node-fetch');
+
+const callServer = function(request, callback) {
+  const options = {
+    method: 'POST',
+    body: request,
+    headers: {
+      'Content-Type': 'application/json',
+    }
+  };
+
+  fetch('http://localhost:3000', options)
+    .then(function(res) { return res.text(); })
+    .then(function(text) { callback(null, text); })
+    .catch(function(err) { callback(err); });
+};
+
+const client = jaysonBrowserClient(callServer, {
+  // other options go here
+});
+
+client.request('multiply', [5, 5], function(err, error, result) {
+  if(err) throw err;
+  console.log(result); // 25
+});</code></pre><h4>Notifications</h4><p>Notification requests are for cases where the reply from the server is not important and should be ignored. This is accomplished by setting the <code>id</code> property of a request object to <code>null</code>.</p>
+<p>Client example in <a href="examples/notifications/client.js">examples/notifications/client.js</a> doing a notification request:</p>
+<pre class="prettyprint source lang-javascript"><code>'use strict';
+
+const jayson = require('./../..');
+
+const client = jayson.client.http({
+  port: 3000
+});
+
+// the third parameter is set to &quot;null&quot; to indicate a notification
+client.request('ping', [], null, function(err) {
+  if(err) throw err;
+  console.log('ok'); // request was received successfully
+});</code></pre><p>Server example in <a href="examples/notifications/server.js">examples/notifications/server.js</a>:</p>
+<pre class="prettyprint source lang-javascript"><code>'use strict';
+
+const jayson = require('./../..');
+
+const server = jayson.server({
+  ping: function(args, callback) {
+    // do something, do nothing
+    callback();
+  }
+});
+
+server.http().listen(3000);</code></pre><h5>Notes</h5><ul>
+<li>Any value that the server returns will be discarded when doing a notification request.</li>
+<li>Omitting the third argument <code>null</code> to <code>Client.prototype.request</code> does not generate a notification request. This argument has to be set explicitly to <code>null</code> for this to happen.</li>
+<li>Network errors and the like will still reach the callback. When the callback is invoked (with or without error) one can be certain that the server has received the request.</li>
+<li>See the <a href="http://jsonrpc.org/spec.html">Official JSON-RPC 2.0 Specification</a> for additional information on how Jayson handles notifications that are erroneous.</li>
+</ul>
+<h4>Batches</h4><p>A batch request is an array of individual requests that are sent to the server as one. Doing a batch request is very simple in Jayson and consists of constructing an array of individual requests (created by not passing a callback to <code>Client.prototype.request</code>) that is then itself passed to <code>Client.prototype.request</code>. </p>
+<p>Combined server/client example in <a href="examples/batch_request/index.js">examples/batch_request/index.js</a>:</p>
+<pre class="prettyprint source lang-javascript"><code>'use strict';
+
+const jayson = require('./../..');
+
+const server = jayson.server({
+  add: function(args, callback) {
+    callback(null, args[0] + args[1]);
+  }
+});
+
+const client = jayson.client(server);
+
+const batch = [
+  client.request('does_not_exist', [10, 5]),
+  client.request('add', [1, 1]),
+  client.request('add', [0, 0], null) // a notification
+];
+
+client.request(batch, function(err, errors, successes) {
+  if(err) throw err;
+  console.log('errors', errors); // array of requests that errored
+  console.log('successes', successes); // array of requests that succeeded
+});
+
+client.request(batch, function(err, responses) {
+  if(err) throw err;
+  console.log('responses', responses); // all responses together
+});</code></pre><h5>Notes</h5><ul>
+<li>See the <a href="http://jsonrpc.org/spec.html">Official JSON-RPC 2.0 Specification</a> for additional information on how Jayson handles different types of batches, mainly with regards to notifications, request errors and so forth.</li>
+<li>There is no guarantee that the results will be in the same order as request Array <code>request</code>. To find the right result, compare the ID from the request with the ID in the result yourself.</li>
+</ul>
+<h4>Client callback syntactic sugar</h4><p>When the length (number of arguments) of a client callback function is either 2 or 3 it receives slightly different values when invoked.</p>
+<ul>
+<li>2 arguments: first argument is an error or <code>null</code>, second argument is the response object as returned (containing <em>either</em> a <code>result</code> or a <code>error</code> property) or <code>null</code> for notifications.</li>
+<li>3 arguments: first argument is an error or null, second argument is a JSON-RPC <code>error</code> property or <code>null</code> (if success), third argument is a JSON-RPC <code>result</code> property or <code>null</code> (if error).</li>
+</ul>
+<p>When doing a batch request with a 3-length callback, the second argument will be an array of requests with a <code>error</code> property and the third argument will be an array of requests with a <code>result</code> property.</p>
+<h4>Client events</h4><p>A client will emit the following events (in addition to any special ones emitted by a specific interface):</p>
+<table>
+<thead>
+<tr>
+<th>Event</th>
+<th>When</th>
+<th>Arguments</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>request</code></td>
+<td>About to dispatch a request</td>
+<td>1: Request object</td>
+<td></td>
+</tr>
+<tr>
+<td><code>response</code></td>
+<td>Received a response</td>
+<td>1: Request object 2: Response object received</td>
+</tr>
+</tbody>
+</table>
+<h3>Server</h3><p>The server classes are available as the <code>Server</code> or <code>server</code> property of <code>require('jayson')</code>.</p>
+<p>The server also sports several interfaces that can be accessed as properties of an instance of <code>Server</code>.</p>
+<h4>Server interface description</h4><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Server</code></td>
+<td>Base interface for a server that supports receiving JSON-RPC requests</td>
+</tr>
+<tr>
+<td><code>Server.tcp</code></td>
+<td>TCP server that inherits from <a href="http://nodejs.org/docs/latest/api/net.html#net_class_net_server">net.Server</a></td>
+</tr>
+<tr>
+<td><code>Server.tls</code></td>
+<td>TLS server that inherits from <a href="https://nodejs.org/api/tls.html#tls_class_tls_server">tls.Server</a></td>
+</tr>
+<tr>
+<td><code>Server.http</code></td>
+<td>HTTP server that inherits from <a href="http://nodejs.org/docs/latest/api/http.html#http_class_http_server">http.Server</a></td>
+</tr>
+<tr>
+<td><code>Server.https</code></td>
+<td>HTTPS server that inherits from <a href="http://nodejs.org/docs/latest/api/https.html#https_class_https_server">https.Server</a></td>
+</tr>
+<tr>
+<td><code>Server.middleware</code></td>
+<td>Method that returns a <a href="http://www.senchalabs.org/connect/">Connect</a>/<a href="http://expressjs.com/">Express</a> compatible middleware function</td>
+</tr>
+</tbody>
+</table>
+<p>Servers supports these options:</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Default</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>reviver</code></td>
+<td><code>null</code></td>
+<td><code>Function</code></td>
+<td><code>JSON.parse</code> reviver</td>
+</tr>
+<tr>
+<td><code>replacer</code></td>
+<td><code>null</code></td>
+<td><code>Function</code></td>
+<td><code>JSON.stringify</code> replacer</td>
+</tr>
+<tr>
+<td><code>router</code></td>
+<td><code>null</code></td>
+<td><code>Function</code></td>
+<td>Return the function for <a href="#method-routing">method routing</a></td>
+</tr>
+<tr>
+<td><code>useContext</code></td>
+<td><code>false</code></td>
+<td><code>Boolean</code></td>
+<td>Passed to <code>methodConstructor</code> options</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td><code>undefined</code></td>
+<td><code>Array/Object/null</code></td>
+<td>Passed to <code>methodConstructor</code> options</td>
+</tr>
+<tr>
+<td><code>methodConstructor</code></td>
+<td><code>jayson.Method</code></td>
+<td><code>Function</code></td>
+<td>Server functions are made an instance of this class</td>
+</tr>
+<tr>
+<td><code>version</code></td>
+<td>2</td>
+<td><code>Number</code></td>
+<td>JSON-RPC version to support (1 or 2)</td>
+</tr>
+</tbody>
+</table>
+<h5>Server.tcp</h5><p>Uses the same options as the base class. Inherits from <a href="http://nodejs.org/docs/latest/api/net.html#net_class_net_server">net.Server</a>.</p>
+<h5>Server.tls</h5><p>Uses the same options as the base class. Inherits from <a href="https://nodejs.org/api/tls.html#tls_class_tls_server">tls.Server</a>.</p>
+<h5>Server.http</h5><p>Uses the same options as the base class. Inherits from <a href="http://nodejs.org/docs/latest/api/http.html#http_class_http_server">http.Server</a>.</p>
+<h6>Server.http Events</h6><table>
+<thead>
+<tr>
+<th>Event</th>
+<th>When</th>
+<th>Arguments</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>http request</code></td>
+<td>Incoming HTTP request</td>
+<td>1. Instance of <code>http.IncomingMessage</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>http response</code></td>
+<td>About to send a HTTP response</td>
+<td>1. Instance of <code>http.ServerResponse</code> 2. Instance of <code>http. IncomingMessage</code></td>
+</tr>
+</tbody>
+</table>
+<h5>Server.https</h5><p>Uses the same options as the base class. Inherits from <a href="http://nodejs.org/docs/latest/api/https.html#https_class_https_server">https.Server</a> and <code>jayson.Server.http</code>. For information on how to configure certificates, <a href="http://nodejs.org/docs/latest/api/https.html#https_class_https_server">see the documentation on https.Server</a>.</p>
+<p>Will emit the <a href="#serverhttp-events">same custom events</a> as <code>Server.http</code>.</p>
+<h5>Server.middleware</h5><p>Uses the same options as the base class. Returns a function that is compatible with <a href="http://www.senchalabs.org/connect/">Connect</a> or <a href="http://expressjs.com/">Express</a>. Will expect the request to be <code>req.body</code>, meaning that the request body must be parsed (typically using <code>connect.bodyParser</code>) before the middleware is invoked.</p>
+<p>The middleware supports the following options:</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Default</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>end</code></td>
+<td><code>true</code></td>
+<td><code>Boolean</code></td>
+<td>If set to <code>false</code> causes the middleware to <code>next()</code> instead of <code>res.end()</code> when finished.</td>
+</tr>
+</tbody>
+</table>
+<p>Middleware example in <a href="examples/middleware/server.js">examples/middleware/server.js</a>:</p>
+<pre class="prettyprint source lang-javascript"><code>'use strict';
+
+const jayson = require('./../..');
+const jsonParser = require('body-parser').json;
+const connect = require('connect');
+const app = connect();
+
+const server = jayson.server({
+  add: function(args, callback) {
+    callback(null, args[0] + args[1]);
+  }
+});
+
+// parse request body before the jayson middleware
+app.use(jsonParser());
+app.use(server.middleware());
+
+app.listen(3000);</code></pre><h4>Many interfaces at the same time</h4><p>A Jayson server can use many interfaces at the same time.</p>
+<p>Server example in <a href="examples/many_interfaces/server.js">examples/many_interfaces/server.js</a> that listens to both <code>http</code> and a <code>https</code> requests:</p>
+<pre class="prettyprint source lang-javascript"><code>'use strict';
+
+const jayson = require('./../..');
+
+const server = jayson.server();
+
+// &quot;http&quot; will be an instance of require('http').Server
+const http = server.http();
+
+// &quot;https&quot; will be an instance of require('https').Server
+const https = server.https({
+  //cert: require('fs').readFileSync('cert.pem'),
+  //key require('fs').readFileSync('key.pem')
+});
+
+http.listen(80, function() {
+  console.log('Listening on *:80');
+});
+
+https.listen(443, function() {
+  console.log('Listening on *:443');
+});</code></pre><h4>Using the server as a relay</h4><p>Passing an instance of a client as a method to the server makes the server relay incoming requests to wherever the client is pointing to. This might be used to delegate computationally expensive functions into a separate server or to abstract a cluster of servers behind a common interface.</p>
+<p>Frontend server example in <a href="examples/relay/server_public.js">examples/relay/server_public.js</a> listening on <code>*:3000</code>:</p>
+<pre class="prettyprint source lang-javascript"><code>'use strict';
+
+const jayson = require('./../..');
+
+// create a server where &quot;add&quot; will relay a localhost-only server
+const server = jayson.server({
+  add: jayson.client.http({
+    port: 3001
+  })
+});
+
+// let the frontend server listen to *:3000
+server.http().listen(3000);</code></pre><p>Backend server example in <a href="examples/relay/server_private.js">examples/relay/server_private.js</a> listening on <code>*:3001</code>:</p>
+<pre class="prettyprint source lang-javascript"><code>'use strict';
+
+const jayson = require('./../..');
+
+const server = jayson.server({
+  add: function(args, callback) {
+    callback(null, args[0] + args[1]);
+  }
+});
+
+// let the backend listen to *:3001
+server.http().listen(3001);</code></pre><p>Every request to <code>add</code> on the public server will now relay the request to the private server. See the client example in <a href="examples/relay/client.js">examples/relay/client.js</a>.</p>
+<h4>Method routing</h4><p>Passing a property named <code>router</code> in the server options will enable you to write your own logic for routing requests to specific functions. </p>
+<p>Server example with custom routing logic in <a href="examples/method_routing/server.js">examples/method_routing/server.js</a>:</p>
+<pre class="prettyprint source lang-javascript"><code>'use strict';
+
+const jayson = require('./../..');
+
+const methods = {
+  add: function(args, callback) {
+    callback(null, args[0] + args[1]);
+  }
+};
+
+const server = jayson.server(methods, {
+  router: function(method, params) {
+    // regular by-name routing first
+    if(typeof(this._methods[method]) === 'function') return this._methods[method];
+    if(method === 'add_2') {
+      const fn = server.getMethod('add').getHandler();
+      return new jayson.Method(function(args, done) {
+        args.unshift(2);
+        fn(args, done);
+      });
+    }
+  }
+});
+
+server.http().listen(3000);</code></pre><p>Client example in <a href="examples/method_routing/client.js">examples/method_routing/client.js</a> invoking <code>add_2</code> on the above server:</p>
+<pre class="prettyprint source lang-javascript"><code>'use strict';
+
+const jayson = require('./../..');
+
+// create a client
+const client = jayson.client.http({
+  port: 3000
+});
+
+// invoke &quot;add_2&quot;
+client.request('add_2', [3], function(err, response) {
+  if(err) throw err;
+  console.log(response.result); // 5!
+});</code></pre><p>Server example of nested routes where each property is separated by a dot (you do not need to use the router option for this):</p>
+<pre class="prettyprint source lang-javascript"><code>'use strict';
+
+const _ = require('lodash');
+const jayson = require('jayson');
+
+const methods = {
+  foo: {
+    bar: function(callback) {
+      callback(null, 'ping pong');
+    }
+  },
+  math: {
+    add: function(args, callback) {
+      callback(null, args[0] + args[1]);
+    }
+  }
+};
+
+// this reduction produces an object like this: {'foo.bar': [Function], 'math.add': [Function]}
+const map = _.reduce(methods, collapse('', '.'), {});
+const server = jayson.server(map);
+
+function collapse(stem, sep) {
+  return function(map, value, key) {
+    var prop = stem ? stem + sep + key : key;
+    if(_.isFunction(value)) map[prop] = value;
+    else if(_.isObject(value)) map = _.reduce(value, collapse(prop, sep), map);
+    return map;
+  }
+}</code></pre><h5>Notes</h5><ul>
+<li>If <code>router</code> does not return anything, the server will respond with a <code>Method Not Found</code> error.</li>
+<li>The <code>Server.prototype</code> methods <code>method</code>, <code>methods</code>, <code>removeMethod</code> and <code>hasMethod</code> will not use the <code>router</code> method, but will operate on the internal <code>Server.prototype._methods</code> map.</li>
+<li>The <code>router</code> method is expected to return instances of <code>jayson.Method</code> (&gt;=1.2.0)</li>
+</ul>
+<h4>Method definition</h4><p>You can also define server methods inside a wrapping object named <code>jayson.Method</code>. This allows additional options about the method to be specified. Using this wrapper - explicitly or implicitly (via server options) - makes it trivial to have your method accept a variable amount of arguments.</p>
+<p>The method class is available as the <code>Method</code> or <code>method</code> property of  <code>require('jayson')</code>. It supports these options:</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Default</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>handler</code></td>
+<td></td>
+<td><code>Function</code></td>
+<td>The actual function that will handle a JSON-RPC request to this method</td>
+</tr>
+<tr>
+<td><code>useContext</code></td>
+<td>false</td>
+<td><code>Boolean</code></td>
+<td>When true, the handler will receive a context object as the second argument</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td>null</td>
+<td>`Array</td>
+<td>Object</td>
+<td>null`</td>
+<td>Force JSON-RPC parameters to be of a certain type</td>
+</tr>
+</tbody>
+</table>
+<p>Server example showcasing most features and options in <a href="examples/method_definitions/server.js">examples/method_definitions/server.js</a>:</p>
+<pre class="prettyprint source lang-javascript"><code>'use strict';
+
+const jayson = require('./../..');
+const _ = require('lodash');
+
+const methods = {
+
+  // this function will be wrapped in jayson.Method with options given to the server
+  sum: function(args, done) {
+    done(null, sum(args));
+  },
+
+  // this function always receives a context object as second arg
+  // it can be overriden on the server level
+  context: jayson.Method(function(args, context, done) {
+    done(null, context);
+  }, {useContext: true}),
+
+  // specifies some default values (alternate definition too)
+  sumDefault: jayson.Method(function(args, done) {
+    const total = sum(args);
+    done(null, total);
+  }, {
+    params: {a: 2, b: 5} // map of defaults
+  }),
+
+  // this method returns true when it gets an array (which it always does)
+  isArray: new jayson.Method({
+    handler: function(args, done) {
+      const result = _.isArray(args);
+      done(null, result);
+    },
+    params: Array // could also be &quot;Object&quot;
+  })
+
+};
+
+const server = jayson.server(methods, {
+  // these options are given as options to jayson.Method when adding the method &quot;sum&quot;.
+  // this is because it is not wrapped in jayson.Method like the others.
+  useContext: false,
+  params: Array
+});
+
+server.http().listen(3000);
+
+// sums all numbers in an array or object
+function sum(list) {
+  return _.reduce(list, function(sum, val) {
+    return sum + val;
+  }, 0);
+}</code></pre><p>Client example in <a href="examples/method_definitions/client.js">examples/method_definitions/client.js</a>:</p>
+<pre class="prettyprint source lang-javascript"><code>'use strict';
+
+const jayson = require('./../..');
+
+const client = jayson.client.http({
+  port: 3000
+});
+
+// invoke &quot;sum&quot; with array
+client.request('sum', [3, 5, 9, 11], function(err, response) {
+  if(err) throw err;
+  console.log(response.result); // 28
+});
+
+// invoke &quot;sum&quot; with an object
+client.request('sum', {a: 2, b: 3, c: 4}, function(err, response) {
+  if(err) throw err;
+  console.log(response.result); // 9
+});
+
+// invoke &quot;sumDefault&quot; with object missing some defined members
+client.request('sumDefault', {b: 10}, function(err, response) {
+  if(err) throw err;
+  console.log(response.result); // 12
+});
+
+// invoke &quot;isArray&quot; with an Object
+client.request('isArray', {a: 5, b: 2, c: 9}, function(err, response) {
+  if(err) throw err;
+  console.log(response.result); // true
+});
+
+// invoke &quot;context&quot;
+client.request('context', {hello: 'world'}, function(err, response) {
+  if(err) throw err;
+  console.log(response.result); // {} - just an empty object
+});</code></pre><h4>Server events</h4><p>In addition to events that are specific to certain interfaces, all servers will emit the following events:</p>
+<table>
+<thead>
+<tr>
+<th>Event</th>
+<th>When</th>
+<th>Arguments</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>request</code></td>
+<td>Interpretable non-batch request received</td>
+<td>1: Request object</td>
+<td></td>
+</tr>
+<tr>
+<td><code>response</code></td>
+<td>Returning a response</td>
+<td>1: Request object 2: Response object</td>
+<td></td>
+</tr>
+<tr>
+<td><code>batch</code></td>
+<td>Interpretable batch request received</td>
+<td>1. Array of requests</td>
+<td>Emits <code>request</code> for every part</td>
+</tr>
+</tbody>
+</table>
+<h4>Server Errors</h4><p>If you should like to return an error from an method request to indicate a failure, remember that the <a href="http://jsonrpc.org/spec.html">JSON-RPC 2.0</a> specification requires the error to be an <code>Object</code> with a <code>code (Integer/Number)</code> to be regarded as valid. You can also provide a <code>message (String)</code> and a <code>data (Object)</code> with additional information. Example: </p>
+<pre class="prettyprint source lang-javascript"><code>var jayson = require('jayson');
+
+var server = jayson.server({
+  i_cant_find_anything: function(args, callback) {
+    var error = {code: 404, message: 'Cannot find ' + args.id};
+    callback(error); // will return the error object as given
+  },
+  i_cant_return_a_valid_error: function(callback) {
+    callback({message: 'I forgot to enter a code'}); // will return a pre-defined &quot;Internal Error&quot;
+  }
+});</code></pre><h5>Predefined Errors</h5><p>It is also possible to cause a method to return one of the predefined <a href="http://jsonrpc.org/spec.html#error_object">JSON-RPC 2.0 error codes</a> using the server helper function <code>Server.prototype.error</code> inside of a server method. Example:</p>
+<pre class="prettyprint source lang-javascript"><code>var jayson = require('jayson');
+
+var server = jayson.server({
+  invalid_params: function(args, callback) {
+    var error = this.error(-32602); // returns an error with the default properties set
+    callback(error);
+  }
+});</code></pre><p>You can even override the default messages:</p>
+<pre class="prettyprint source lang-javascript"><code>var jayson = require('jayson');
+
+var server = jayson.server({
+  error_giver_of_doom: function(callback) {
+    callback(true) // invalid error format, which causes an Internal Error to be returned instead
+  }
+});
+
+// Override the default message
+server.errorMessages[Server.errors.INTERNAL_ERROR] = 'I has a sad. I cant do anything right';</code></pre><h4>Server CORS</h4><p>Jayson does not include functionality for supporting CORS requests natively but it is easy to use a CORS-enabling middleware
+like <a href="https://github.com/expressjs/cors">cors</a>. An example of this can be found in <a href="examples/cors/server.js">examples/cors/server.js</a>:</p>
+<pre class="prettyprint source lang-javascript"><code>'use strict';
+
+const jayson = require('./../..');
+const cors = require('cors');
+const connect = require('connect');
+const jsonParser = require('body-parser').json;
+const app = connect();
+
+const server = jayson.server({
+  myNameIs: function(args, callback) {
+    callback(null, 'Your name is: ' + args.name);
+  }
+});
+
+app.use(cors({methods: ['POST']}));
+app.use(jsonParser());
+app.use(server.middleware());
+
+app.listen(3000);</code></pre><h4>Server Context</h4><p><em>Since version 3.0.0</em></p>
+<p>You can provide an optional context object to JSON-RPC method handlers. This can be used to give extra data to a handler  such as request headers, authentication tokens, and so on.</p>
+<p>This feature is unlocked by having <code>jayson.Method</code> accepts a boolean option called <code>useContext</code>. It always defaults to <code>false</code> for backwards compatibility. When it is set to <code>true</code> the method handler that <code>jayson.Method</code> wraps will <strong>always</strong> receive a context object as the second argument. The object can be given as the third argument to <code>jayson.Server.prototype.call</code>.</p>
+<p>Server example in <a href="examples/context/server.js">examples/context/server.js</a>:</p>
+<pre class="prettyprint source lang-javascript"><code>'use strict';
+
+const _ = require('lodash');
+const jayson = require('./../..');
+const jsonParser = require('body-parser').json;
+const express = require('express');
+const app = express();
+
+const server = jayson.server({
+
+  getHeaders: function(args, context, callback) {
+    callback(null, context.headers);
+  },
+
+  // old method not receiving a context object (here for reference)
+  oldMethod: new jayson.Method(function(args, callback) {
+    callback(null, {});
+  }, {
+    // this setting overrides the server option set below for this particular method only
+    useContext: false
+  })
+
+}, {
+  // all methods will receive a context object as the second arg
+  useContext: true
+});
+
+app.use(jsonParser());
+app.use(function(req, res, next) {
+  // prepare a context object passed into the JSON-RPC method
+  const context = {headers: req.headers};
+  server.call(req.body, context, function(err, result) {
+    if(err) return next(err);
+    res.send(result || {});
+  });
+});
+
+app.listen(3001);</code></pre><p>Client example in <a href="examples/context/client.js">examples/context/client.js</a>:</p>
+<pre class="prettyprint source lang-javascript"><code>'use strict';
+
+const jayson = require('./../..');
+
+// create a client
+const client = jayson.client.http({
+  port: 3001
+});
+
+// invoke &quot;getHeaders&quot;
+client.request('getHeaders', {}, function(err, response) {
+  if(err) throw err;
+  console.log(response.result);
+});</code></pre><h5>Notes</h5><ul>
+<li><code>jayson.Server</code> also accepts <code>useContext</code> as an option, and passes the value on to the <code>jayson.Method</code> constructor. This option can be overriden on a per-method basis as shown above.</li>
+<li>Individual requests in a JSON-RPC batch will all receive the exact same context object in their handler - take care not to mutate it</li>
+<li>If a falsy context value is given to <code>jayson.Server.prototype.call</code>, an empty object will be created</li>
+<li>None of the current jayson server transports (http, https, tls, tcp, middleware) can make use of the context object. You will need to rig your own transport implementation, like the one above based on an <code>express</code> http server. See the <a href="#faq">FAQ</a> for more info about this.</li>
+</ul>
+<h3>Revivers and Replacers</h3><p>JSON lacks support for representing types other than the simple ones defined in the <a href="http://jsonrpc.org/spec.html">JSON specification</a>. Fortunately the JSON methods in JavaScript (<code>JSON.parse</code> and <code>JSON.stringify</code>) provide options for custom serialization/deserialization routines. Jayson allows you to pass your own routines as options to both clients and servers.</p>
+<p>Simple example transferring the state of an object between a client and a server:</p>
+<p>Shared code between the server and the client in <a href="examples/reviving_and_replacing/shared.js">examples/reviving_and_replacing/shared.js</a>:</p>
+<pre class="prettyprint source lang-javascript"><code>'use strict';
+
+const Counter = exports.Counter = function(value) {
+  this.count = value || 0;
+};
+
+Counter.prototype.increment = function() {
+  this.count += 1;
+};
+
+exports.replacer = function(key, value) {
+  if(value instanceof Counter) {
+    return {$class: 'counter', $props: {count: value.count}};
+  }
+  return value;
+};
+
+exports.reviver = function(key, value) {
+  if(value && value.$class === 'counter') {
+    const obj = new Counter();
+    for(const prop in value.$props) obj[prop] = value.$props[prop];
+    return obj;
+  }
+  return value;
+};</code></pre><p>Server example in <a href="examples/reviving_and_replacing/server.js">examples/reviving_and_replacing/server.js</a>:</p>
+<pre class="prettyprint source lang-javascript"><code>'use strict';
+
+const jayson = require('./../..');
+const shared = require('./shared');
+
+// Set the reviver/replacer options
+const options = {
+  reviver: shared.reviver,
+  replacer: shared.replacer
+};
+
+// create a server
+const server = jayson.server({
+  increment: function(args, callback) {
+    args.counter.increment();
+    callback(null, args.counter);
+  }
+}, options);
+
+server.http().listen(3000);</code></pre><p>A client example in <a href="examples/reviving_and_replacing/client.js">examples/reviving_and_replacing/client.js</a> invoking &quot;increment&quot; on the server:</p>
+<pre class="prettyprint source lang-javascript"><code>'use strict';
+
+const jayson = require('./../..');
+const shared = require('./shared');
+
+const client = jayson.client.http({
+  port: 3000,
+  reviver: shared.reviver,
+  replacer: shared.replacer
+});
+
+// create the object
+const params = {
+  counter: new shared.Counter(2)
+};
+
+// invoke &quot;increment&quot;
+client.request('increment', params, function(err, response) {
+  if(err) throw err;
+  const result = response.result;
+  console.log(
+    result instanceof shared.Counter, // true
+    result.count, // 3
+    params.counter === result // false - result is a new object
+  );
+});</code></pre><h4>Notes</h4><ul>
+<li>Instead of using a replacer, it is possible to define a <code>toJSON</code> method for any JavaScript object. Unfortunately there is no corresponding method for reviving objects (that would not work, obviously), so the <em>reviver</em> always has to be set up manually.</li>
+</ul>
+<h3>Named parameters</h3><p>It is possible to specify named parameters when doing a client request by passing an Object instead of an Array.</p>
+<p>Client example in <a href="examples/named_parameters/client.js">examples/named_parameters/client.js</a>:</p>
+<pre class="prettyprint source lang-javascript"><code>'use strict';
+
+const jayson = require('jayson');
+
+const client = jayson.client.http({
+  port: 3000
+});
+
+client.request('add', {b: 1, a: 2}, function(err, response) {
+  if(err) throw err;
+  console.log(response.result); // 3!
+});</code></pre><p>Server example in <a href="examples/named_parameters/server.js">examples/named_parameters/server.js</a>:</p>
+<pre class="prettyprint source lang-javascript"><code>'use strict';
+
+const jayson = require('./../..');
+
+const server = jayson.server({
+  add: function(params, callback) {
+    callback(null, params.a + params.b);
+  }
+});
+
+server.http().listen(3000);</code></pre><h4>Notes</h4><ul>
+<li>If requesting methods on a Jayson server, arguments left out will be <code>undefined</code></li>
+<li>Too many arguments or arguments with invalid names will be ignored</li>
+<li>It is assumed that the last argument to a server method is the callback and it will not be filled with something else</li>
+<li>Parsing a function signature and filling in arguments is generally <em>not recommended</em> and should be avoided</li>
+</ul>
+<h2>Promises</h2><p><em>Since version 2.0.0</em></p>
+<p>A separate tree that does limited usage of the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">ES6 Promise</a> object is available. The internal API remains callback based, with the addition that promises may be used for two things:</p>
+<ul>
+<li>Returning a Promise when requesting a JSON-RPC method using a Client</li>
+<li>Returning a Promise inside of a Server method</li>
+</ul>
+<p>To use the separate tree, do a <code>require('jayson/promise')</code> instead of <code>require('jayson')</code>.</p>
+<p>Server example in <a href="examples/promise/server.js">examples/promise/server.js</a> showing how to return a <code>Promise</code> in a server method:</p>
+<pre class="prettyprint source lang-javascript"><code>'use strict';
+
+const jayson = require('../../promise');
+const _ = require('lodash');
+
+const server = jayson.server({
+
+  add: function(args) {
+    return new Promise(function(resolve, reject) {
+      const sum = _.reduce(args, function(sum, value) { return sum + value; }, 0);
+      resolve(sum);
+    });
+  },
+
+  // example on how to reject
+  rejection: function(args) {
+    return new Promise(function(resolve, reject) {
+      // server.error just returns {code: 501, message: 'not implemented'}
+      reject(server.error(501, 'not implemented'));
+    });
+  }
+
+});
+
+server.http().listen(3000);</code></pre><p>Client example in <a href="examples/promise/client.js">examples/promise/client.js</a> showing how to do a request:</p>
+<pre class="prettyprint source lang-javascript"><code>'use strict';
+
+const jayson = require('../../promise');
+
+const client = jayson.client.http({
+  port: 3000
+});
+
+const reqs = [
+  client.request('add', [1, 2, 3, 4, 5]),
+  client.request('rejection', [])
+];
+
+Promise.all(reqs).then(function(responses) {
+  console.log(responses[0].result);
+  console.log(responses[1].error);
+});</code></pre><h4>Notes</h4><ul>
+<li>JSON-RPC errors will not result in rejection of the Promise. It is however possible that a future version will include a client setting to have JSON-RPC errors result in rejection. Please note that network errors and the like will result in rejection.</li>
+<li>A <code>Promise</code> is considered to have been returned from a server method if the returned object has a property <code>then</code> that is a function.</li>
+</ul>
+<h4>Promise Batches</h4><p><em>Since version 2.0.5</em></p>
+<p>Sometimes you may want to return raw requests from a promise client. This needs to be handled differently, because <code>PromiseClient.prototype.request</code> would normally always be expected to <em>return a Promise</em> which we in this case don't want.</p>
+<p>To solve this, we need to set the fourth parameter to <code>PromiseClient.prototype.request</code> explicitly to <code>false</code> in order to <em>not</em> return a Promise.</p>
+<p>Client example in <a href="examples/promise_batches/client.js">examples/promise_batches/client.js</a> showing how to properly execute a batch request:</p>
+<pre class="prettyprint source lang-javascript"><code>'use strict';
+
+const jayson = require('../../promise');
+
+const client = jayson.client.http({
+  port: 3000
+});
+
+const batch = [
+  client.request('add', [1, 2, 3, 4, 5], undefined, false),
+  client.request('add', [5, 6, 7, 8, 9], undefined, false),
+];
+
+client.request(batch).then(function(responses) {
+  console.log(responses[0].result); // 15
+  console.log(responses[1].result); // 35
+});</code></pre><h5>Notes</h5><ul>
+<li>The third parameter to <code>PromiseClient.prototype.request</code> above is explicitly set to <code>undefined</code> - this parameter would normally represent the desired ID of the call. Remember that <code>null</code> would mean a notification (which does not return a response) and other falsy values may actually be used as ids. Setting <code>undefined</code> ensures that the id is generated automatically.</li>
+</ul>
+<h2>FAQ</h2><h3>How can I pass HTTP headers/session/etc into my JSON-RPC request handler?</h3><p><em>Support for method context added in version 3.0.0</em></p>
+<p>See <a href="#server-context">Server context</a> section.</p>
+<h3>What is the recommended way to use jayson?</h3><p>Using the provided clients and servers for http, https, tls, tcp and the express middleware is fine and works well for most use cases. However, sometimes issues like these crop up (quotes below are not directly from issue posters):</p>
+<ul>
+<li>&quot;The (non-jayson) HTTP/TCP server I'm interacting with expects every call to terminate with <code>\r\n</code> but the jayson client does not&quot;</li>
+<li><a href="https://github.com/tedeh/jayson/issues/86">&quot;How can my jayson TLS server support requests encoded such and such?&quot;</a></li>
+<li><a href="https://github.com/tedeh/jayson/issues/70">&quot;How can I make the jayson HTTP middleware accept GET requests?&quot;</a></li>
+<li><a href="https://github.com/tedeh/jayson/issues/92">&quot;My jayson client interacting with a (non-jayson) TLS server closes the connection after every sent request. I think this is wasteful!&quot;</a></li>
+</ul>
+<p>These are not issues with jayson, but stem from the fact that <a href="http://jsonrpc.org/spec.html">JSON-RPC 2.0 specification</a> is <strong>transport agnostic</strong> and these kind of behaviours are <strong>not defined</strong> by that specification. The clients provided by jayson for http, https, tls, tcp are made to work and tested with their corresponding jayson server implementation. Any other compatibility with any other server or client is <em>accidental</em> when it comes to <strong>details of the transport layer</strong>. With that said, jayson is made to be 100 % compatible with the <a href="http://jsonrpc.org/spec.html">JSON-RPC 2.0 specification</a> and compatibility with other non-jayson servers or clients when it comes to the <em>application layer</em> is pretty much guaranteed.</p>
+<p>The library author <a href="https://github.com/tedeh">tedeh</a> therefore recommends that if you have particular needs when it comes to the transport layer you create an implementation satisfying these details yourself. <strong>Doing this is actually quite simple.</strong></p>
+<p>Example of a http server built with express in <a href="examples/faq_recommended_http_server/server.js">examples/faq_recommended_http_server/server.js</a>:</p>
+<pre class="prettyprint source lang-javascript"><code>'use strict';
+
+const _ = require('lodash');
+const jayson = require('./../..');
+const jsonParser = require('body-parser').json;
+const express = require('express');
+const app = express();
+
+// create a plain jayson server
+const server = jayson.server({
+  add: function(numbers, callback) {
+    callback(null, _.reduce(numbers, (sum, val) => sum + val, 0));
+  }
+});
+
+app.use(jsonParser()); // &lt;- here we can deal with maximum body sizes, etc
+app.use(function(req, res, next) {
+  const request = req.body;
+  // &lt;- here we can check headers, modify the request, do logging, etc
+  server.call(request, function(err, response) {
+    if(err) {
+      // if err is an Error, err is NOT a json-rpc error
+      if(err instanceof Error) return next(err);
+      // &lt;- deal with json-rpc errors here, typically caused by the user
+      res.status(400);
+      res.send(err);
+      return;
+    }
+    // &lt;- here we can mutate the response, set response headers, etc
+    if(response) {
+      res.send(response);
+    } else {
+      // empty response (could be a notification)
+      res.status(204);
+      res.send('');
+    }
+  });
+});
+
+app.listen(3001);</code></pre><p>Using some of the utilities provided and exported by jayson, creating a client offering the same kind of flexibility is also simple. Example of a compatible http client built with superagent in <a href="examples/faq_recommended_http_server/client.js">examples/faq_recommended_http_server/client.js</a>:</p>
+<pre class="prettyprint source lang-javascript"><code>'use strict';
+
+const jayson = require('./../..');
+const request = require('superagent');
+
+// generate a json-rpc version 2 compatible request (non-notification)
+const requestBody = jayson.Utils.request('add', [1,2,3,4], undefined, {
+  version: 2, // generate a version 2 request
+});
+
+request.post('http://localhost:3001')
+  // &lt;- here we can setup timeouts, set headers, cookies, etc
+  .timeout({response: 5000, deadline: 60000})
+  .send(requestBody)
+  .end(function(err, response) {
+    if(err) {
+      // superagent considers 300-499 status codes to be errors
+      // @see http://visionmedia.github.io/superagent/#error-handling
+      if(!err.status) throw err;
+      const body = err.response.body;
+      // body may be a JSON-RPC error, or something completely different
+      // it can be handled here
+      if(body && body.error && jayson.Utils.Response.isValidError(body.error, 2)) {
+        // the error body was a valid JSON-RPC version 2
+        // we may wish to deal with it differently
+        console.err(body.error);
+        return;
+      }
+      throw err; // error was something completely different
+    }
+
+    const body = response.body;
+
+    // check if we got a valid JSON-RPC 2.0 response
+    if(!jayson.Utils.Response.isValidResponse(body, 2)) {
+      console.err(body);
+    }
+
+    if(body.error) {
+      // we have a json-rpc error...
+      console.err(body.error); // 10!
+    } else {
+      // do something useful with the result
+      console.log(body.result); // 10!
+    }
+  });</code></pre><h2>Contributing</h2><p>Highlighting <a href="https://github.com/tedeh/jayson/issues">issues</a> or submitting pull
+requests on <a href="https://github.com/tedeh/jayson">Github</a> is most welcome.</p>
+<p>Please make sure to follow the style of the project, and lint your code with <code>npm run lint</code> before submitting a patch.</p>
+<h3>Submitting issues with the Typescript type definitions</h3><p>You are required to provide an easily reproducible code sample of any errors with the Typescript type definitions so that they can be added to the typescript test file in <a href="typescript/test.ts">typescript/test.ts</a>. Better yet, issue a pull request adding a test there yourself that shows up when running the <code>package.json</code> script <code>test-tsc</code>.</p></article>
+    </section>
+
+
+
+
+
+
+
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	
+		<div class="col-md-3">
+			<div id="toc" class="col-md-3 hidden-xs hidden-sm hidden-md"></div>
+		</div>
+	
+
+</div>
+</div>
+
+
+    <div class="modal fade" id="searchResults">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Search results</h4>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
+
+
+<footer>
+
+
+	<span class="copyright">
+	The MIT License
+	</span>
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a>
+	
+	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
+</span>
+</footer>
+
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/toc.js"></script>
+
+    <script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( ".tutorial-section pre, .readme-section pre, pre.prettyprint.source" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
+			lang = langClassMatch ? langClassMatch[1] : "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : true,
+		showMenu : true,
+		enableDoclinks : true
+	} );
+
+	$.catchAnchorLinks( {
+        navbarOffset: 10
+	} );
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			return $( heading ).attr( "id" ) || ( prefix + i );
+		},
+		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
+		showAndHide : false,
+		smoothScrolling: true
+	} );
+
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+
+    $( "table" ).each( function () {
+      var $this = $( this );
+      $this.addClass('table');
+    } );
+
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            SearcherDisplay.init();
+        });
+    </script>
+
+
+</body>
+</html>

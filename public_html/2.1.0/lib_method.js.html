@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>Jayson Source: lib/method.js</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.simplex.css">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top navbar-inverse">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">Jayson</a>
+		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+        </button>
+	</div>
+	<div class="navbar-collapse collapse" id="topNavigation">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="namespaces.list.html" class="dropdown-toggle" data-toggle="dropdown">Namespaces<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Jayson.html">Jayson</a></li><li><a href="JaysonPromise.html">JaysonPromise</a></li><li><a href="PromiseUtils.html">PromiseUtils</a></li><li><a href="Utils.html">Utils</a></li><li><a href="Utils.JSON.html">Utils.JSON</a></li><li><a href="Utils.Request.html">Utils.Request</a></li><li><a href="Utils.Response.html">Utils.Response</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Client.html">Client</a></li><li><a href="ClientBrowser.html">ClientBrowser</a></li><li><a href="ClientHttp.html">ClientHttp</a></li><li><a href="ClientHttps.html">ClientHttps</a></li><li><a href="ClientTcp.html">ClientTcp</a></li><li><a href="ClientTls.html">ClientTls</a></li><li><a href="Method.html">Method</a></li><li><a href="PromiseClient.html">PromiseClient</a></li><li><a href="PromiseClientHttp.html">PromiseClientHttp</a></li><li><a href="PromiseClientHttps.html">PromiseClientHttps</a></li><li><a href="PromiseClientTcp.html">PromiseClientTcp</a></li><li><a href="PromiseClientTls.html">PromiseClientTls</a></li><li><a href="PromiseMethod.html">PromiseMethod</a></li><li><a href="PromiseServer.html">PromiseServer</a></li><li><a href="Server.html">Server</a></li><li><a href="ServerHttp.html">ServerHttp</a></li><li><a href="ServerHttps.html">ServerHttps</a></li><li><a href="ServerMiddleware.html">ServerMiddleware</a></li><li><a href="ServerTcp.html">ServerTcp</a></li><li><a href="ServerTls.html">ServerTls</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+        
+            <div class="col-sm-3 col-md-3">
+                <form class="navbar-form" role="search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                        <div class="input-group-btn">
+                            <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        
+	</div>
+
+</div>
+</div>
+
+
+<div class="container" id="toc-content">
+<div class="row">
+
+	
+	<div class="col-md-12">
+	
+		<div id="main">
+			
+
+		<h1 class="page-title">Source: lib/method.js</h1>
+    
+<section>
+    <article>
+        <pre
+            class="sunlight-highlight-javascript linenums">var jayson = require('./');
+var utils = require('./utils');
+var _ = require('lodash');
+
+/**
+ * @summary Constructor for a Jayson Method
+ * @class Method
+ * @param {Function} [handler] - Function to set as handler
+ * @param {Object} [options] 
+ * @param {Function} [options.handler] - Same as separate handler
+ * @param {Boolean} [options.collect=true] - Params to the handler are collected in one object
+ * @param {Array|Object} [options.params] - Defines params that the handler accepts
+ */
+var Method = function(handler, options) {
+
+  if(!(this instanceof Method)) {
+    return new Method(handler, options);
+  }
+
+  // only got passed options
+  if(_.isPlainObject(handler)) {
+    options = handler;
+    handler = null;
+  }
+
+  var defaults = {
+    collect: true
+  };
+
+  options = options || {};
+
+  this.options = utils.merge(defaults, options);
+  this.handler = handler || options.handler;
+};
+
+module.exports = Method;
+
+/**
+ * @summary Returns the handler function associated with this method
+ * @return {Function}
+ */
+Method.prototype.getHandler = function() {
+  return this.handler;
+};
+
+/**
+ * @summary Sets the handler function associated with this method
+ * @param {Function} handler
+ */
+Method.prototype.setHandler = function(handler) {
+  this.handler = handler;
+};
+
+/**
+ * @summary Prepare parameters for the method handler
+ * @private
+ */
+Method.prototype._getHandlerParams = function(params) {
+  var options = this.options;
+  var handler = this.getHandler();
+
+  var isObjectParams = !_.isArray(params) &amp;&amp; _.isObject(params) &amp;&amp; params;
+  var isArrayParams = _.isArray(params);
+
+  if(options.collect) {
+    // collect parameters in one argument to handler
+
+    switch(true) {
+
+      // handler always gets an array
+      case options.params === Array:
+        return isArrayParams ? params : _.toArray(params);
+
+      // handler always gets an object
+      case options.params === Object:
+        return isObjectParams ? params : _.toPlainObject(params);
+
+      // handler gets a list of defined properties that should always be set
+      case _.isArray(options.params):
+        var undefinedParams = _.reduce(options.params, function(undefinedParams, key) {
+          undefinedParams[key] = undefined;
+          return undefinedParams;
+        }, {});
+        return _.extend(undefinedParams, _.pick(params, _.keys(params)));
+
+      // handler gets a map of defined properties and their default values
+      case _.isPlainObject(options.params):
+        return _.extend({}, options.params, _.pick(params, _.keys(params)));
+
+      // give params as is
+      default:
+        return params;
+    
+    }
+
+  } else {
+    // let the arguments pass to the handler as given
+
+    if(isObjectParams) {
+      // named parameters passed, take all parameters for handler except last (the callback)
+      return _.initial(utils.getParameterNames(handler)).map(function(name) {
+        return params[name];
+      });
+    }
+
+    // regular parameters array passed
+    return params;
+  }
+};
+
+/**
+ * @summary Executes this method in the context of a server
+ * @param {Server} server
+ * @param {Array|Object} requestParams
+ * @param {Function} callback
+ */
+Method.prototype.execute = function(server, requestParams, callback) {
+  var options = this.options;
+  var handler = this.getHandler();
+  var params = this._getHandlerParams(requestParams);
+
+  if(options.collect) {
+    return handler.call(server, params, callback);
+  }
+
+  // Params is optional according to the JSON-RPC 2.0 spec so if it doesnt
+  // exist just create an empty array.
+  if (!params) {
+    params = [];
+  }
+
+  // compare without the callback
+  if(handler.length !== (params.length + 1)) {
+    callback(server.error(jayson.Server.errors.INVALID_PARAMS));
+    return;
+  }
+
+  return handler.apply(server, _.flatten([params, callback]));
+};
+</pre>
+    </article>
+</section>
+
+
+
+
+
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	
+
+</div>
+</div>
+
+
+    <div class="modal fade" id="searchResults">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Search results</h4>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
+
+
+<footer>
+
+
+	<span class="copyright">
+	The MIT License
+	</span>
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a>
+	
+	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
+</span>
+</footer>
+
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/toc.js"></script>
+
+    <script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( ".tutorial-section pre, .readme-section pre, pre.prettyprint.source" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
+			lang = langClassMatch ? langClassMatch[1] : "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : true,
+		showMenu : true,
+		enableDoclinks : true
+	} );
+
+	$.catchAnchorLinks( {
+        navbarOffset: 10
+	} );
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			return $( heading ).attr( "id" ) || ( prefix + i );
+		},
+		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
+		showAndHide : false,
+		smoothScrolling: true
+	} );
+
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+
+    $( "table" ).each( function () {
+      var $this = $( this );
+      $this.addClass('table');
+    } );
+
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            SearcherDisplay.init();
+        });
+    </script>
+
+
+</body>
+</html>

@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>Jayson Source: lib/server/index.js</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.simplex.css">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top navbar-inverse">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">Jayson</a>
+		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+        </button>
+	</div>
+	<div class="navbar-collapse collapse" id="topNavigation">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="namespaces.list.html" class="dropdown-toggle" data-toggle="dropdown">Namespaces<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Jayson.html">Jayson</a></li><li><a href="JaysonPromise.html">JaysonPromise</a></li><li><a href="PromiseUtils.html">PromiseUtils</a></li><li><a href="Utils.html">Utils</a></li><li><a href="Utils.JSON.html">Utils.JSON</a></li><li><a href="Utils.Request.html">Utils.Request</a></li><li><a href="Utils.Response.html">Utils.Response</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Client.html">Client</a></li><li><a href="ClientBrowser.html">ClientBrowser</a></li><li><a href="ClientHttp.html">ClientHttp</a></li><li><a href="ClientHttps.html">ClientHttps</a></li><li><a href="ClientTcp.html">ClientTcp</a></li><li><a href="ClientTls.html">ClientTls</a></li><li><a href="Method.html">Method</a></li><li><a href="PromiseClient.html">PromiseClient</a></li><li><a href="PromiseClientHttp.html">PromiseClientHttp</a></li><li><a href="PromiseClientHttps.html">PromiseClientHttps</a></li><li><a href="PromiseClientTcp.html">PromiseClientTcp</a></li><li><a href="PromiseClientTls.html">PromiseClientTls</a></li><li><a href="PromiseMethod.html">PromiseMethod</a></li><li><a href="PromiseServer.html">PromiseServer</a></li><li><a href="Server.html">Server</a></li><li><a href="ServerHttp.html">ServerHttp</a></li><li><a href="ServerHttps.html">ServerHttps</a></li><li><a href="ServerMiddleware.html">ServerMiddleware</a></li><li><a href="ServerTcp.html">ServerTcp</a></li><li><a href="ServerTls.html">ServerTls</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+        
+            <div class="col-sm-3 col-md-3">
+                <form class="navbar-form" role="search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                        <div class="input-group-btn">
+                            <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        
+	</div>
+
+</div>
+</div>
+
+
+<div class="container" id="toc-content">
+<div class="row">
+
+	
+	<div class="col-md-12">
+	
+		<div id="main">
+			
+
+		<h1 class="page-title">Source: lib/server/index.js</h1>
+    
+<section>
+    <article>
+        <pre
+            class="sunlight-highlight-javascript linenums">'use strict';
+
+const events = require('events');
+const isFunction = require('lodash/isFunction');
+const jayson = require('../');
+const utils = require('../utils');
+
+/**
+ *  Constructor for a Jayson Server
+ *  @class Server
+ *  @extends require('events').EventEmitter
+ *  @param {Object&lt;String,Function>} [methods] Methods to add
+ *  @param {Object} [options]
+ *  @param {Array|Object} [options.params] Passed to Jayson.Method as an option when created
+ *  @param {Boolean} [options.useContext=false] Passed to Jayson.Method as an option when created
+ *  @param {Function} [options.reviver] Reviver function for JSON
+ *  @param {Function} [options.replacer] Replacer function for JSON
+ *  @param {Function} [options.methodConstructor] Methods will be made instances of this class
+ *  @param {String} [options.encoding="utf8"] Encoding to use
+ *  @param {Number} [options.version=2] JSON-RPC version to use (1|2)
+ *  @param {Function} [options.router] Function to use for routing methods
+ *  @property {Object} options A reference to the internal options object that can be modified directly
+ *  @property {Object} errorMessages Map of error code to error message pairs that will be used in server responses
+ *  @property {ServerHttp} http HTTP interface constructor
+ *  @property {ServerHttps} https HTTPS interface constructor
+ *  @property {ServerTcp} tcp TCP interface constructor
+ *  @property {ServerTls} tls TLS interface constructor
+ *  @property {Middleware} middleware Middleware generator function
+ *  @return {Server}
+ */
+const Server = function(methods, options) {
+  if(!(this instanceof Server)) {
+    return new Server(methods, options);
+  }
+
+  const defaults = {
+    reviver: null,
+    replacer: null,
+    encoding: 'utf8',
+    version: 2,
+    useContext: false,
+    methodConstructor: jayson.Method,
+    router: function(method) {
+      return this.getMethod(method);
+    }
+  };
+
+  this.options = utils.merge(defaults, options || {});
+
+  // bind router to the server
+  this.options.router = this.options.router.bind(this);
+  
+  this._methods = {};
+
+  // adds methods passed to constructor
+  this.methods(methods || {});
+
+  // assigns interfaces to this instance
+  const interfaces = Server.interfaces;
+  for(let name in interfaces) {
+    this[name] = interfaces[name].bind(interfaces[name], this);
+  }
+
+  // copies error messages for defined codes into this instance
+  this.errorMessages = {};
+  for(let handle in Server.errors) {
+    const code = Server.errors[handle];
+    this.errorMessages[code] = Server.errorMessages[code];
+  }
+
+};
+require('util').inherits(Server, events.EventEmitter);
+
+module.exports = Server;
+
+/**
+ * Interfaces that will be automatically bound as properties of a Server instance
+ * @enum {Function}
+ * @static
+ */
+Server.interfaces = {
+  http: require('./http'),
+  https: require('./https'),
+  tcp: require('./tcp'),
+  tls: require('./tls'),
+  middleware: require('./middleware')
+};
+
+/**
+ * JSON-RPC specification errors that map to an integer code
+ * @enum {Number}
+ * @static
+ */
+Server.errors = {
+  PARSE_ERROR: -32700,
+  INVALID_REQUEST: -32600,
+  METHOD_NOT_FOUND: -32601,
+  INVALID_PARAMS: -32602,
+  INTERNAL_ERROR: -32603
+};
+
+/*
+ * Error codes that map to an error message
+ * @enum {String}
+ * @static
+ */
+Server.errorMessages = {};
+Server.errorMessages[Server.errors.PARSE_ERROR] = 'Parse Error';
+Server.errorMessages[Server.errors.INVALID_REQUEST] = 'Invalid request';
+Server.errorMessages[Server.errors.METHOD_NOT_FOUND] = 'Method not found';
+Server.errorMessages[Server.errors.INVALID_PARAMS] = 'Invalid method parameter(s)';
+Server.errorMessages[Server.errors.INTERNAL_ERROR] = 'Internal error';
+
+/**
+ *  Adds a single method to the server
+ *  @param {String} name Name of method to add
+ *  @param {Function|Client} definition Function or Client for a relayed method
+ *  @throws {TypeError} Invalid parameters
+ */
+Server.prototype.method = function(name, definition) {
+  const Method = this.options.methodConstructor;
+
+  const isRelay = definition instanceof jayson.Client;
+  const isMethod = definition instanceof Method;
+  const isDefinitionFunction = isFunction(definition);
+
+  // a valid method is either a function or a client (relayed method)
+  if(!isRelay &amp;&amp; !isMethod &amp;&amp; !isDefinitionFunction) {
+    throw new TypeError('method definition must be either a function, an instance of jayson.Client or an instance of jayson.Method');
+  }
+
+  if(!name || typeof(name) !== 'string') {
+    throw new TypeError('"' + name + '" must be a non-zero length string');
+  }
+
+  if(/^rpc\./.test(name)) {
+    throw new TypeError('"' + name + '" is a reserved method name');
+  }
+
+  // make instance of jayson.Method
+  if(!isRelay &amp;&amp; !isMethod) {
+    definition = new Method(definition, {
+      params: this.options.params,
+      useContext: this.options.useContext
+    });
+  }
+
+  this._methods[name] = definition;
+};
+
+/**
+ *  Adds a batch of methods to the server
+ *  @param {Object} methods Methods to add
+ */
+Server.prototype.methods = function(methods) {
+  methods = methods || {};
+
+  for(let name in methods) {
+    this.method(name, methods[name]);
+  }
+
+};
+
+/**
+ *  Checks if a method is registered with the server
+ *  @param {String} name Name of method
+ *  @return {Boolean}
+ */
+Server.prototype.hasMethod = function(name) {
+  return name in this._methods;
+};
+
+/**
+ *  Removes a method from the server
+ *  @param {String} name
+ */
+Server.prototype.removeMethod = function(name) {
+  if(this.hasMethod(name)) {
+    delete this._methods[name];
+  }
+};
+
+/**
+ * Gets a method from the server
+ * @param {String} name
+ * @return {Method}
+ */
+Server.prototype.getMethod = function(name) {
+  return this._methods[name];
+};
+
+/**
+ *  Returns a JSON-RPC compatible error property
+ *  @param {Number} [code=-32603] Error code
+ *  @param {String} [message="Internal error"] Error message
+ *  @param {Object} [data] Additional data that should be provided
+ *  @return {Object}
+ */
+Server.prototype.error = function(code, message, data) {
+  if(typeof(code) !== 'number') {
+    code = Server.errors.INTERNAL_ERROR;
+  }
+
+  if(typeof(message) !== 'string') {
+    message = this.errorMessages[code] || '';
+  }
+
+  const error = { code: code, message: message };
+  if(typeof(data) !== 'undefined') {
+    error.data = data;
+  }
+  return error;
+};
+
+/**
+ *  Calls a method on the server
+ *  @param {Object|Array|String} request A JSON-RPC request object. Object for single request, Array for batches and String for automatic parsing (using the reviver option)
+ *  @param {Object} [context] Optional context object passed to methods
+ *  @param {Function} [originalCallback] Callback that receives one of two arguments: first is an error and the second a response
+ */
+Server.prototype.call = function(request, context, originalCallback) {
+  const self = this;
+
+  if(typeof(context) === 'function') {
+    originalCallback = context;
+    context = {};
+  }
+
+  if(typeof(context) === 'undefined') {
+    context = {};
+  }
+
+  if(typeof(originalCallback) !== 'function') {
+    originalCallback = function() {};
+  }
+
+  // compose the callback so that we may emit an event on every response
+  const callback = function(error, response) {
+    self.emit('response', request, response || error);
+    originalCallback.apply(null, arguments);
+  };
+
+  maybeParse(request, this.options, function(err, request) {
+    let error = null; // JSON-RPC error
+
+    if(err) {
+      error = self.error(Server.errors.PARSE_ERROR, null, err);
+      callback(utils.response(error, undefined, undefined, self.options.version));
+      return;
+    }
+
+    // is this a batch request?
+    if(utils.Request.isBatch(request)) {
+
+      // batch requests not allowed for version 1
+      if(self.options.version === 1) {
+        error = self.error(Server.errors.INVALID_REQUEST);
+        callback(utils.response(error, undefined, undefined, self.options.version));
+        return;
+      }
+
+      // special case if empty batch request
+      if(!request.length) {
+        error = self.error(Server.errors.INVALID_REQUEST);
+        callback(utils.response(error, undefined, undefined, self.options.version));
+        return;
+      }
+      self._batch(request, context, callback);
+      return;
+    }
+
+    self.emit('request', request);
+
+    // is the request valid?
+    if(!utils.Request.isValidRequest(request, self.options.version)) {
+      error = self.error(Server.errors.INVALID_REQUEST);
+      callback(utils.response(error, undefined, undefined, self.options.version));
+      return;
+    }
+
+    // from now on we are "notification-aware" and can deliberately ignore errors for such requests
+    const respond = function(error, result) {
+      if(utils.Request.isNotification(request)) {
+        callback();
+        return;
+      }
+      const response = utils.response(error, result, request.id, self.options.version);
+      if(response.error) {
+        callback(response);
+      } else {
+        callback(null, response);
+      }
+    };
+
+    const method = self._resolveRouter(request.method, request.params);
+
+    // are we attempting to invoke a relayed method?
+    if(method instanceof jayson.Client) {
+      return method.request(request.method, request.params, request.id, function(error, response) {
+        if(utils.Request.isNotification(request)) {
+          callback();
+          return;
+        }
+        callback(error, response);
+      });
+    }
+    
+    // does the method exist?
+    if(!(method instanceof jayson.Method)) {
+      respond(self.error(Server.errors.METHOD_NOT_FOUND));
+      return;
+    }
+
+    // execute jayson.Method instance
+    method.execute(self, request.params, context, function(error, result) {
+    
+      if(utils.Response.isValidError(error, self.options.version)) {
+        respond(error);
+        return;
+      }
+
+      // got an invalid error
+      if(error) {
+        respond(self.error(Server.errors.INTERNAL_ERROR));
+        return;
+      }
+
+      respond(null, result);
+    
+    });
+
+  });
+};
+
+/**
+ * Invoke the router
+ * @param {String} method Method to resolve
+ * @param {Array|Object} params Request params
+ * @return {Method}
+ */
+Server.prototype._resolveRouter = function(method, params) {
+
+  let router = this.options.router;
+
+  if(!isFunction(router)) {
+    router = function(method) {
+      return this.getMethod(method);
+    };
+  }
+
+  const resolved = router.call(this, method, params);
+
+  // got a jayson.Method or a jayson.Client, return it
+  if((resolved instanceof jayson.Method) || (resolved instanceof jayson.Client)) {
+    return resolved;
+  }
+
+  // got a regular function, make it an instance of jayson.Method
+  if(isFunction(resolved)) {
+    return new jayson.Method(resolved);
+  }
+
+};
+
+/**
+ *  Evaluates a batch request
+ *  @private
+ */
+Server.prototype._batch = function(requests, context, callback) {
+  const self = this;
+  
+  const responses = [];
+
+  this.emit('batch', requests);
+
+  /**
+   * @ignore
+   */
+  const maybeRespond = function() {
+
+    // done when we have filled up all the responses with a truthy value
+    const isDone = responses.every(function(response) { return response !== null; });
+    if(isDone) {
+
+      // filters away notifications
+      const filtered = responses.filter(function(res) {
+        return res !== true;
+      });
+
+      // only notifications in request means empty response
+      if(!filtered.length) {
+        return callback();
+      }
+      callback(null, filtered);
+    }
+  };
+
+  /**
+   * @ignore
+   */
+  const wrapper = function(request, index) {
+    responses[index] = null;
+    return function() {
+      if(utils.Request.isValidRequest(request, self.options.version)) {
+        self.call(request, context, function(error, response) {
+          responses[index] = error || response || true;
+          maybeRespond();
+        });
+      } else {
+        const error = self.error(Server.errors.INVALID_REQUEST);
+        responses[index] = utils.response(error, undefined, undefined, self.options.version);
+        maybeRespond();
+      }
+    };
+  };
+
+  const stack = requests.map(function(request, index) {
+    // ignore possibly nested requests
+    if(utils.Request.isBatch(request)) {
+      return null;
+    }
+    return wrapper(request, index);
+  });
+
+  stack.forEach(function(method) {
+    if(typeof(method) === 'function') {
+      method();
+    }
+  });
+};
+
+/**
+ * Parse "request" if it is a string, else just invoke callback
+ * @ignore
+ */
+function maybeParse(request, options, callback) {
+  if(typeof(request) === 'string') {
+    utils.JSON.parse(request, options, callback);
+  } else {
+    callback(null, request);
+  }
+}
+</pre>
+    </article>
+</section>
+
+
+
+
+
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	
+
+</div>
+</div>
+
+
+    <div class="modal fade" id="searchResults">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Search results</h4>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
+
+
+<footer>
+
+	<!-- Fathom - simple website analytics - https://usefathom.com --> <script> (function(f, a, t, h, o, m){ a[h]=a[h]||function(){ (a[h].q=a[h].q||[]).push(arguments) }; o=f.createElement('script'), m=f.getElementsByTagName('script')[0]; o.async=1; o.src=t; o.id='fathom-script'; m.parentNode.insertBefore(o,m) })(document, window, 'https://cdn.usefathom.com/tracker.js', 'fathom'); fathom('set', 'siteId', 'WCJKCJXD'); fathom('trackPageview'); </script> <!-- / Fathom -->
+
+
+	<span class="copyright">
+	The MIT License
+	</span>
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a>
+	
+	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
+</span>
+</footer>
+
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/toc.js"></script>
+
+    <script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( ".tutorial-section pre, .readme-section pre, pre.prettyprint.source" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
+			lang = langClassMatch ? langClassMatch[1] : "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : true,
+		showMenu : true,
+		enableDoclinks : true
+	} );
+
+	$.catchAnchorLinks( {
+        navbarOffset: 10
+	} );
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			return $( heading ).attr( "id" ) || ( prefix + i );
+		},
+		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
+		showAndHide : false,
+		smoothScrolling: true
+	} );
+
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+
+    $( "table" ).each( function () {
+      var $this = $( this );
+      $this.addClass('table');
+    } );
+
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            SearcherDisplay.init();
+        });
+    </script>
+
+
+</body>
+</html>
